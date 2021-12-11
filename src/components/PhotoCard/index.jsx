@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
+import { useLocalStorage } from '../../hooks/useLocalStorage'
+
 import { Article, ImgWrapper, Img, Button } from './styles'
 import { MdFavorite, MdFavoriteBorder } from 'react-icons/md'
 
@@ -9,14 +11,7 @@ const PhotoCard = ({ id, likes = 0, src = DEFAULT_IMAGE }) => {
   const element = useRef(null)
   const [show, setShow] = useState(false)
   const key = `like-${id}`
-  const [liked, setLiked] = useState(() => {
-    try {
-      const like = window.localStorage.getItem(key)
-      return JSON.parse(like)
-    } catch (error) {
-      return false
-    }
-  })
+  const [liked, setLiked] = useLocalStorage(key, false)
 
   useEffect(() => {
     const observer = new window.IntersectionObserver(entries => {
@@ -31,14 +26,7 @@ const PhotoCard = ({ id, likes = 0, src = DEFAULT_IMAGE }) => {
   }, [element])
 
   const Icon = liked ? MdFavorite : MdFavoriteBorder
-  const setLocalStorage = value => {
-    try {
-      window.localStorage.setItem(key, value)
-      setLiked(value)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+
   return (
     <Article ref={element}>
       {
@@ -49,7 +37,7 @@ const PhotoCard = ({ id, likes = 0, src = DEFAULT_IMAGE }) => {
                 <Img src={src} />
               </ImgWrapper>
             </a>
-            <Button onClick={() => setLocalStorage(!liked)}>
+            <Button onClick={() => setLiked(!liked)}>
               <Icon size='25px' />{likes} likes!
             </Button>
           </>
