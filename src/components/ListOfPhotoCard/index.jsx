@@ -7,7 +7,7 @@ const ListOfPhotoCard = () => {
       {
         [1, 2, 4, 5, 6].map(id =>
           <li key={id}>
-            <PhotoCard />
+            <PhotoCard id={id} />
           </li>
         )
       }
